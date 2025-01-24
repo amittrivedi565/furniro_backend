@@ -1,47 +1,72 @@
-import {Request, Response} from "express"
-import { readData, writeData } from "../utils/database";
-import IProduct from "../types/IProduct"
+import { PrismaClient } from '@prisma/client';
 
-export const addProduct = async (req : Request, res : Response) : Promise<void> => {
-    try {
-        const {name, category, price, discounted_price} = req.body;
+const prisma = new PrismaClient();
 
-        if (!name || !category || !price || !discounted_price) {
-            res.status(400).send({ message: 'Missing required fields' });
-            return;
-        }
+// Function to insert new product data
+export const insertData = async (data: any) => {
+  try {
+    const product = await prisma.product.create({
+      data: {
+        name: data.name,
+        category: data.category,
+        price: data.price,
+        discountedPrice: data.discountedPrice || null,
+        image: data.image || null,
+        discount: data.discount || null,
+      },
+    });
+    return product;
+  } catch (error) {
+    console.error('Error inserting data:', error);
+    throw error;
+  }
+};
 
-        const data = await readData();
-        const products: IProduct[] = data.products;
+// Function to fetch all products
+export const getAllProducts = async () => {
+  try {
+    const products = await prisma.product.findMany();
+    return products;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
+};
 
-        const newProduct : IProduct = {
-            name,
-            category,
-            price,
-            discounted_price
-        }
+// Function to update product by ID
+export const updateProduct = async (productId: string, data: any) => {
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        name: data.name,
+        category: data.category,
+        price: data.price,
+        discountedPrice: data.discountedPrice || null,
+        image: data.image || null,
+        discount: data.discount || null,
+      },
+    });
+    return updatedProduct;
+  } catch (error) {
+    console.error('Error updating product:', error);
+    throw error;
+  }
+};
 
-        products.push(newProduct);
-        await writeData({ products });
-
-        res.status(201).json({
-            message: 'Product added successfully',
-            product: newProduct,
-        });
-
-    } catch (error) {
-        res.status(500).send({message: "Internal Server Error"})
-    }
-}
-
-export const getProducts = async (req : Request, res : Response) : Promise<void> => {
-    try {
-        const data = await readData();
-        const products: IProduct[] = data.products;
-        res.status(200).json(products);
-
-    } catch (error) {
-        res.status(500).json({message: "Internal Server Error"})
-    }
-}
-
+// Function to delete a product by ID
+export const deleteProduct = async (productId: string) => {
+  try {
+    const deletedProduct = await prisma.product.delete({
+      where: {
+        id: productId,
+      },
+    });
+    return deletedProduct;
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    throw error;
+  }
+};

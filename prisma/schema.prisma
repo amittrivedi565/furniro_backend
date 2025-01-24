@@ -1,0 +1,22 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "mongodb"  // Use MongoDB as the database provider
+  url      = env("DATABASE_URL")  // MongoDB connection URL from .env file
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  category       String
+  price          String
+  discountedPrice String? 
+  image          String?
+  discount       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

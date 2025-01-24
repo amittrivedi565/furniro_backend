@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "start": "tsc && node dist/index.js",
-  "dev": "ts-node app.ts"
+    "start": "tsc && node dist/index.js",
+    "dev": "ts-node app.ts"
   },
   "keywords": [],
   "author": "",
@@ -12,7 +12,11 @@
   "type": "commonjs",
   "description": "",
   "dependencies": {
-    "express": "^4.21.2"
+    "@prisma/client": "^6.2.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5",
+    "prisma": "^6.2.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
